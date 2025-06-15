@@ -70,3 +70,8 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 [Aa]ssets/[Ss]treamingAssets/aa.meta
 [Aa]ssets/[Ss]treamingAssets/aa/*
+game10tr/Assets/Firebase/
+game10tr/Assets/Plugins/
+game10tr/Assets/ExternalDependencyManager/
+game10tr/Assets/StreamingAssets/
+game10tr/Assets/google-services.json
