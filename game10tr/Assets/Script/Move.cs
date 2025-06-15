@@ -20,13 +20,13 @@ public class SmoothGridMovement : MonoBehaviour
         vector2.y = Input.GetAxisRaw("Vertical");
         if (vector2.x < 0)
         {
-            GetComponent<SpriteRenderer>().flipX = true;  // sang trái
+            gameObject.transform.localScale=new Vector3(1,1,1);  // sang trái
             
             Debug.Log("Moving Left");
         }
         else if (vector2.x > 0)
         {
-            GetComponent<SpriteRenderer>().flipX = false; // sang phải
+            gameObject.transform.localScale = new Vector3(-1, 1, 1);  // sang trái
 
             Debug.Log("Moving Right");
         }
