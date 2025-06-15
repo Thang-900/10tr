@@ -6,6 +6,8 @@ TagManager:
   tags:
   - player
   - weapons
+  - wepons
+  - Bom
   layers:
   - Default
   - TransparentFX
@@ -42,6 +44,9 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: player
+    uniqueID: 480506277
     locked: 0
   - name: wepons
     uniqueID: 324670235

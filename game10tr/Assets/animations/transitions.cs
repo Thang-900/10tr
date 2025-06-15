@@ -5,50 +5,122 @@ using UnityEngine;
 public class transitions : MonoBehaviour
 {
     public Animator animator;
-    private enum Direction { Up, Down, Side }
-    private Direction lastDirection = Direction.Side;
+    bool isHoldingBom = false;
+    bool isHoldingBomAndWalking = false;
+    bool isHoldingBomAndIdling = false;
+    float vertical;
+    float horizontal;
+    float directionX;
+    float directionY;
+    public GameObject sideBom;
+    public GameObject upBom;
+    public GameObject downBom;
 
-    void Update()
+    private void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-
-        bool isMoving = (Mathf.Abs(horizontal) > 0f || Mathf.Abs(vertical) > 0f);
-
-        if (isMoving)
+        vertical = Input.GetAxisRaw("Vertical");
+        horizontal = Input.GetAxisRaw("Horizontal");
+        if (isHoldingBom)
         {
-            // Xác định hướng cuối cùng
-            if (Mathf.Abs(horizontal) > Mathf.Abs(vertical))
+            if (vertical != 0 || horizontal != 0)
             {
-                lastDirection = Direction.Side;
+                Debug.Log("chuyen sang dung yen");
+                directionX = horizontal;
+                directionY = vertical;
+                //hien bom di sang hai ben
+                if ((directionX == 1 || directionX == -1) && directionY == 0)
+                {
+                    sideBom.SetActive(true);
+                    upBom.SetActive(false);
+                    downBom.SetActive(false);
+                }
+                //directionX == 0 ||directionX==1||directionX==-1 && 
+                //hien bom dang di len
+                else if (directionY == 1)
+                {
+                    sideBom.SetActive(false);
+                    upBom.SetActive(true);
+                    downBom.SetActive(false);
+                }
+                //directionX == 0 && 
+                //hien bom dang di xuong
+                else if (directionY == -1)
+                {
+                    upBom.SetActive(false);
+                    sideBom.SetActive(false);
+                    downBom.SetActive(true);
+                }
+
+
+
+                animator.SetBool("isHoldingBomAndWalking", true);
+                animator.SetBool("isHoldingBomAndIdling", false);
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isIdling", false);
+                
             }
             else
             {
-                if (vertical > 0) lastDirection = Direction.Up;
-                else if (vertical < 0) lastDirection = Direction.Down;
+                Debug.Log("chuyen sang dung yen");
+                if ((directionX == 1 || directionX == -1) && directionY == 0)
+                {
+                    sideBom.SetActive(true);
+                    upBom.SetActive(false);
+                    downBom.SetActive(false);
+                }
+                //directionX == 0 ||directionX==1||directionX==-1 && 
+                //hien bom dang di len
+                else if (directionY == 1)
+                {
+                    sideBom.SetActive(false);
+                    upBom.SetActive(true);
+                    downBom.SetActive(false);
+                }
+                //directionX == 0 && 
+                //hien bom dang di xuong
+                else if (directionY == -1)
+                {
+                    upBom.SetActive(false);
+                    sideBom.SetActive(false);
+                    downBom.SetActive(true);
+                }
+                animator.SetBool("isHoldingBomAndWalking", false);
+                animator.SetBool("isHoldingBomAndIdling", true);
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isIdling", false);
             }
-
-            // Xử lý Walk
-            animator.SetBool("isWUp", lastDirection == Direction.Up);
-            animator.SetBool("isWDown", lastDirection == Direction.Down);
-            animator.SetBool("isWSide", lastDirection == Direction.Side);
-
-            // Tắt Idle
-            animator.SetBool("isIUp", false);
-            animator.SetBool("isIDown", false);
-            animator.SetBool("isISide", false);
+            animator.SetFloat("horizontal", directionX);
+            animator.SetFloat("vertical", directionY);
         }
+
+
         else
         {
-            // Không di chuyển, dùng hướng cuối cùng để idle đúng
-            animator.SetBool("isIUp", lastDirection == Direction.Up);
-            animator.SetBool("isIDown", lastDirection == Direction.Down);
-            animator.SetBool("isISide", lastDirection == Direction.Side);
+            if (vertical != 0 || horizontal != 0)
+            {
+                directionX = horizontal;
+                directionY = vertical;
 
-            // Tắt Walk
-            animator.SetBool("isWUp", false);
-            animator.SetBool("isWDown", false);
-            animator.SetBool("isWSide", false);
+                animator.SetBool("isWalking", true);
+                animator.SetBool("isIdling", false);
+            }
+            else
+            {
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isIdling", true);
+            }
+
+            animator.SetFloat("horizontal", directionX);
+            animator.SetFloat("vertical", directionY);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Bom") && !isHoldingBom)
+        {
+            isHoldingBom = true;
+            other.gameObject.SetActive(false);
         }
     }
 
