@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿// transitions.cs
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,8 +8,6 @@ public class transitions : MonoBehaviour
     [SerializeField] private GameObject[] bom; // Mảng chứa các bom
     public Animator animator;
     public bool isHoldingBom = false;
-    bool isHoldingBomAndWalking = false;
-    bool isHoldingBomAndIdling = false;
     float vertical;
     float horizontal;
     float directionX;
@@ -16,108 +15,75 @@ public class transitions : MonoBehaviour
     public GameObject sideBom;
     public GameObject upBom;
     public GameObject downBom;
+    public BomMove bomMove; // Kéo vào Inspector
 
     private void Update()
     {
         vertical = Input.GetAxisRaw("Vertical");
         horizontal = Input.GetAxisRaw("Horizontal");
-        if (isHoldingBom)
+
+        // 1) Nếu đang cầm bom và **chưa** bắt đầu ném
+        if (isHoldingBom && !bomMove.isThrowing)
         {
             if (vertical != 0 || horizontal != 0)
             {
-                Debug.Log("dang cam bom va di chuyen");
                 directionX = horizontal;
                 directionY = vertical;
-                //hien bom di sang hai ben
-                if ((directionX == 1 || directionX == -1) && directionY == 0)
-                {
-                    sideBom.SetActive(true);
-                    upBom.SetActive(false);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 ||directionX==1||directionX==-1 && 
-                //hien bom dang di len
-                else if (directionY == 1)
-                {
-                    sideBom.SetActive(false);
-                    upBom.SetActive(true);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 && 
-                //hien bom dang di xuong
-                else if (directionY == -1)
-                {
-                    upBom.SetActive(false);
-                    sideBom.SetActive(false);
-                    downBom.SetActive(true);
-                }
 
-
+                // Hiện bom theo hướng
+                sideBom.SetActive((Mathf.Abs(directionX) == 1 && directionY == 0));
+                upBom.SetActive(directionY == 1);
+                downBom.SetActive(directionY == -1);
 
                 animator.SetBool("isHoldingBomAndWalking", true);
                 animator.SetBool("isHoldingBomAndIdling", false);
-                animator.SetBool("isWalking", false);
-                animator.SetBool("isIdling", false);
-                
             }
             else
             {
-                Debug.Log("dang cam bom va dung yen");
-                if ((directionX == 1 || directionX == -1) && directionY == 0)
-                {
-                    sideBom.SetActive(true);
-                    upBom.SetActive(false);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 ||directionX==1||directionX==-1 && 
-                //hien bom dang di len
-                else if (directionY == 1)
-                {
-                    sideBom.SetActive(false);
-                    upBom.SetActive(true);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 && 
-                //hien bom dang di xuong
-                else if (directionY == -1)
-                {
-                    upBom.SetActive(false);
-                    sideBom.SetActive(false);
-                    downBom.SetActive(true);
-                }
+                // Đứng yên giữ hướng cuối cùng
+                sideBom.SetActive((Mathf.Abs(directionX) == 1 && directionY == 0));
+                upBom.SetActive(directionY == 1);
+                downBom.SetActive(directionY == -1);
+
                 animator.SetBool("isHoldingBomAndWalking", false);
                 animator.SetBool("isHoldingBomAndIdling", true);
-                animator.SetBool("isWalking", false);
-                animator.SetBool("isIdling", false);
             }
+
+            // Reset các state không liên quan
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isIdling", false);
             animator.SetFloat("horizontal", directionX);
             animator.SetFloat("vertical", directionY);
         }
-
-
+        //// 2) Nếu bom đang bay (đang ném) → bỏ qua hoàn toàn, không đổi animation
+        //else if (bomMove.isThrowing)
+        //{
+        //    // Không làm gì, giữ nguyên animation cũ cho đến khi bomMove.isThrowing = false
+        //}
+        // 3) Không cầm bom và bom cũng không bay
         else
         {
+            // Tắt hết sprite bom
             foreach (GameObject b in bom)
-            {
                 b.SetActive(false);
-            }
-
+            animator.SetBool("isHoldingBomAndWalking", false);
+            animator.SetBool("isHoldingBomAndIdling", false);
             if (vertical != 0 || horizontal != 0)
             {
-                Debug.Log("dang di chuyen");
                 directionX = horizontal;
                 directionY = vertical;
-
                 animator.SetBool("isWalking", true);
                 animator.SetBool("isIdling", false);
             }
             else
             {
-                Debug.Log("dang dung yen");
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isIdling", true);
             }
 
+            // Reset các state cầm bom
+            animator.SetBool("isHoldingBomAndWalking", false);
+            animator.SetBool("isHoldingBomAndIdling", false);
             animator.SetFloat("horizontal", directionX);
             animator.SetFloat("vertical", directionY);
         }
@@ -127,10 +93,8 @@ public class transitions : MonoBehaviour
     {
         if (other.CompareTag("Bom") && !isHoldingBom)
         {
-            Debug.Log("Bom da duoc nhat");
             isHoldingBom = true;
-            Destroy(other.gameObject); // Hủy bom khi nhặt được
+            Destroy(other.gameObject);
         }
     }
-
 }
