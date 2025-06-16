@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class transitions : MonoBehaviour
 {
+    [SerializeField] private GameObject[] bom; // Mảng chứa các bom
     public Animator animator;
-    bool isHoldingBom = false;
+    public bool isHoldingBom = false;
     bool isHoldingBomAndWalking = false;
     bool isHoldingBomAndIdling = false;
     float vertical;
@@ -24,7 +25,7 @@ public class transitions : MonoBehaviour
         {
             if (vertical != 0 || horizontal != 0)
             {
-                Debug.Log("chuyen sang dung yen");
+                Debug.Log("dang cam bom va di chuyen");
                 directionX = horizontal;
                 directionY = vertical;
                 //hien bom di sang hai ben
@@ -61,7 +62,7 @@ public class transitions : MonoBehaviour
             }
             else
             {
-                Debug.Log("chuyen sang dung yen");
+                Debug.Log("dang cam bom va dung yen");
                 if ((directionX == 1 || directionX == -1) && directionY == 0)
                 {
                     sideBom.SetActive(true);
@@ -96,8 +97,14 @@ public class transitions : MonoBehaviour
 
         else
         {
+            foreach (GameObject b in bom)
+            {
+                b.SetActive(false);
+            }
+
             if (vertical != 0 || horizontal != 0)
             {
+                Debug.Log("dang di chuyen");
                 directionX = horizontal;
                 directionY = vertical;
 
@@ -106,6 +113,7 @@ public class transitions : MonoBehaviour
             }
             else
             {
+                Debug.Log("dang dung yen");
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isIdling", true);
             }
@@ -119,8 +127,9 @@ public class transitions : MonoBehaviour
     {
         if (other.CompareTag("Bom") && !isHoldingBom)
         {
+            Debug.Log("Bom da duoc nhat");
             isHoldingBom = true;
-            other.gameObject.SetActive(false);
+            Destroy(other.gameObject); // Hủy bom khi nhặt được
         }
     }
 
