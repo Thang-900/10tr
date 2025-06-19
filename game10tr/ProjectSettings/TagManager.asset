@@ -8,6 +8,7 @@ TagManager:
   - weapons
   - wepons
   - Bom
+  - Harmer
   layers:
   - Default
   - TransparentFX
@@ -50,4 +51,7 @@ TagManager:
     locked: 0
   - name: wepons
     uniqueID: 324670235
+    locked: 0
+  - name: harmer
+    uniqueID: 3653307921
     locked: 0

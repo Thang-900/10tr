@@ -10,6 +10,10 @@ public class SmoothGridMovement : MonoBehaviour
     private Boolean isMoving = true;
     private Rigidbody2D rb;
     private Vector2 vector2;
+    public transitions transitions; // Biến để truy cập vào script transitions
+    float directionX;
+    float directionY;
+    public Animator animator;   
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -18,10 +22,13 @@ public class SmoothGridMovement : MonoBehaviour
     {
         vector2.x = Input.GetAxisRaw("Horizontal");
         vector2.y = Input.GetAxisRaw("Vertical");
+        if (vector2.sqrMagnitude > 1)  // nếu tổng lớn hơn 1 (đi chéo)
+            vector2 = vector2.normalized;
+
         if (vector2.x < 0)
         {
-            gameObject.transform.localScale=new Vector3(1,1,1);  // sang trái
-            
+            gameObject.transform.localScale = new Vector3(1, 1, 1);  // sang trái
+
             Debug.Log("Moving Left");
         }
         else if (vector2.x > 0)
@@ -47,6 +54,32 @@ public class SmoothGridMovement : MonoBehaviour
         //        }
         //    }
         //}
+        if (!transitions.isWeaponing)
+        {
+            if (vector2.x != 0 || vector2.y != 0)
+            {
+                Debug.Log("dang khong cam vu khi va di chuyen");
+                directionX = vector2.x;
+                directionY = vector2.y;
+
+                animator.SetBool("isHoldingBomAndWalking", false);
+                animator.SetBool("isHoldingBomAndIdling", false);
+                animator.SetBool("isWalking", true);
+                animator.SetBool("isIdling", false);
+            }
+            else
+            {
+                Debug.Log("dang khong cam vu khi va dung yen");
+                animator.SetBool("isHoldingBomAndWalking", false);
+                animator.SetBool("isHoldingBomAndIdling", false);
+                animator.SetBool("isWalking", false);
+                animator.SetBool("isIdling", true);
+            }
+            
+        }
+        animator.SetFloat("horizontal", directionX);
+        animator.SetFloat("vertical", directionY);
+
     }
     private void FixedUpdate()
     {

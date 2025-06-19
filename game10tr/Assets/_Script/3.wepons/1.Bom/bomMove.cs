@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// ném bom khi có bom và ấn chuột,Hủy bom khi chạm đích một khoảng thời gian nhất định
 public class BomMove : MonoBehaviour
 {
     [SerializeField] Transform bomSpawnPoint; // Vị trí ném bom
     [SerializeField] float maxDistance = 3f; // Bán kính tối đa mà bom có thể di chuyển
     [SerializeField] float speed = 10f; // Tốc độ di chuyển của bom
-    [SerializeField] GameObject prefabExBom; //nem prefab bom nổ
+    [SerializeField] GameObject prefabExBom; //nem  bom nổ
+    [SerializeField] GameObject damageBom; //no bom khi chạm đích
     [SerializeField] float invokeTime = 0.5f; // Thời gian để bom nổ sau khi di chuyển đến vị trí mục tiêu
     private Vector3 targetPosition; // Vị trí mục tiêu mà bom sẽ di chuyển đến
     private Vector3 mouseWorldPos;
@@ -16,6 +18,7 @@ public class BomMove : MonoBehaviour
     private bool isTouching = false; // Biến để kiểm soát trạng thái chạm vào mục tiêu
     public transitions transitions; // Biến để truy cập vào script transitions
     private GameObject currentBom; // Biến để lưu trữ bom hiện tại
+
     private Vector3 takeTargetPosition()
     {
         mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -47,9 +50,13 @@ public class BomMove : MonoBehaviour
             
             if ((currentBom.transform.position - targetPosition).sqrMagnitude < 0.01f)
             {
-                Debug.Log("Bom da den dich");
+                Debug.Log("Bom da den dich+huy trang thai vu khi");
+                Instantiate(damageBom, targetPosition, Quaternion.identity); // Tạo hiệu ứng nổ bom
                 isThrowing = false; // Kết thúc ném
+                transitions.isWeaponing = false; // Kết thúc trạng thái vũ khí
+
                 Invoke(nameof(disapear), invokeTime);
+
             }
         }
     }
