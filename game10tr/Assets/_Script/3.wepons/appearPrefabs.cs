@@ -1,33 +1,45 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class appearPrefabs : MonoBehaviour
 {
-    DisappearAfterAnim finishedAnimation; // Biến để lưu trữ script DisappearAfterAnim
-    [SerializeField] GameObject prefabToAppear; // Prefab sẽ xuất hiện
-    [SerializeField] float delay = 0f; // Thời gian prefab tồn tại
-    [SerializeField] private Transform spawnPoint; // Vị trí xuất hiện của prefab
-    private GameObject instance=null; // Biến để lưu trữ instance của prefab
+    [SerializeField] private GameObject prefabToAppear;
+    [SerializeField] private float delay = 0f;
+    [SerializeField] private Transform spawnPoint;
+
+    private bool isSpawning = false; // Đánh dấu đang chờ animation cũ kết thúc
+    public GameObject instance = null;
+
     public void Appear()
     {
+        // Kiểm tra: đang spawning hoặc prefab chưa bị hủy => không cho tạo mới
+        if (isSpawning || instance != null) return;
+        
         if (prefabToAppear != null && spawnPoint != null)
         {
-            GetComponent<SpriteRenderer>().enabled = false;  // Tắt gameObject hiện tại
+            spawnPoint.transform.GetComponent<SpriteRenderer>().enabled = false;
+            GetComponent<SpriteRenderer>().enabled = false;
             instance = Instantiate(prefabToAppear, spawnPoint.position, Quaternion.identity);
-            if(finishedAnimation.endedAnimation)
+
+            // Tìm và gắn callback khi animation kết thúc
+            DisappearAfterAnim disappear = instance.GetComponent<DisappearAfterAnim>();
+            if (disappear != null)
             {
-                active(); // Kích hoạt lại gameObject hiện tại
+                isSpawning = true;
+                disappear.onAnimationEnd = OnPrefabAnimationEnd;
             }
         }
         else
         {
-            Debug.LogWarning("Prefab hoặc vị trí xuất hiện không được thiết lập.");
+            Debug.LogWarning("Prefab hoặc vị trí spawn chưa được thiết lập.");
         }
     }
-    private void active()
+
+    private void OnPrefabAnimationEnd()
     {
+        instance = null;
+        isSpawning = false;
+        spawnPoint.transform.GetComponent<SpriteRenderer>().enabled = true;
         GetComponent<SpriteRenderer>().enabled = true;
     }
-    
 }

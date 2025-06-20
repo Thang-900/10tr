@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
+using System; // << thêm dòng này để dùng Action
 
 public class DisappearAfterAnim : MonoBehaviour
 {
-    // Hàm này sẽ được gọi bởi Animation Event
-    public bool endedAnimation = false;
+    public Action onAnimationEnd; // Callback dùng để báo về appearPrefabs
+
+    // Hàm này được gọi từ Animation Event
     public void OnAnimationEnd()
     {
-        // Ẩn hoặc hủy object
-        gameObject.SetActive(false); // hoặc: Destroy(gameObject);
-        endedAnimation = true; // Đặt cờ để biết animation đã kết thúc
+        onAnimationEnd?.Invoke(); // Gọi callback nếu có
+        Destroy(gameObject); // Hủy đối tượng sau khi animation kết thúc
     }
 }
