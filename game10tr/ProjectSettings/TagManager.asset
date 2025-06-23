@@ -9,6 +9,7 @@ TagManager:
   - wepons
   - Bom
   - Harmer
+  - Gun
   layers:
   - Default
   - TransparentFX

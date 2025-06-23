@@ -50,7 +50,7 @@ public class BomMove : MonoBehaviour
             
             if ((currentBom.transform.position - targetPosition).sqrMagnitude < 0.01f)
             {
-                Debug.Log("Bom da den dich+huy trang thai vu khi");
+                Debug.Log("da den dich+huy trang thai vu khi");
                 Instantiate(damageBom, targetPosition, Quaternion.identity); // Tạo hiệu ứng nổ bom
                 isThrowing = false; // Kết thúc ném
                 transitions.isWeaponing = false; // Kết thúc trạng thái vũ khí

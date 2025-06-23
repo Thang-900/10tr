@@ -31,28 +31,7 @@ public class transitions : MonoBehaviour
                 directionX = horizontal;
                 directionY = vertical;
                 //hien bom di sang hai ben
-                if ((directionX == 1 || directionX == -1) && directionY == 0)
-                {
-                    sideBom.SetActive(true);
-                    upBom.SetActive(false);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 ||directionX==1||directionX==-1 && 
-                //hien bom dang di len
-                else if (directionY == 1)
-                {
-                    sideBom.SetActive(false);
-                    upBom.SetActive(true);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 && 
-                //hien bom dang di xuong
-                else if (directionY == -1)
-                {
-                    upBom.SetActive(false);
-                    sideBom.SetActive(false);
-                    downBom.SetActive(true);
-                }
+                
 
                 animator.SetBool("isHoldingBomAndWalking", true);
                 animator.SetBool("isHoldingBomAndIdling", false);
@@ -63,32 +42,32 @@ public class transitions : MonoBehaviour
             else
             {
                 Debug.Log("dang cam bom va dung yen");
-                if ((directionX == 1 || directionX == -1) && directionY == 0)
-                {
-                    sideBom.SetActive(true);
-                    upBom.SetActive(false);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 ||directionX==1||directionX==-1 && 
-                //hien bom dang di len
-                else if (directionY == 1)
-                {
-                    sideBom.SetActive(false);
-                    upBom.SetActive(true);
-                    downBom.SetActive(false);
-                }
-                //directionX == 0 && 
-                //hien bom dang di xuong
-                else if (directionY == -1)
-                {
-                    upBom.SetActive(false);
-                    sideBom.SetActive(false);
-                    downBom.SetActive(true);
-                }
                 animator.SetBool("isHoldingBomAndWalking", false);
                 animator.SetBool("isHoldingBomAndIdling", true);
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isIdling", false);
+            }
+            if ((directionX == 1 || directionX == -1) && directionY == 0)
+            {
+                sideBom.SetActive(true);
+                upBom.SetActive(false);
+                downBom.SetActive(false);
+            }
+            //directionX == 0 ||directionX==1||directionX==-1 && 
+            //hien bom dang di len
+            else if (directionY == 1)
+            {
+                sideBom.SetActive(false);
+                upBom.SetActive(true);
+                downBom.SetActive(false);
+            }
+            //directionX == 0 && 
+            //hien bom dang di xuong
+            else if (directionY == -1)
+            {
+                upBom.SetActive(false);
+                sideBom.SetActive(false);
+                downBom.SetActive(true);
             }
             animator.SetFloat("horizontal", directionX);
             animator.SetFloat("vertical", directionY);
