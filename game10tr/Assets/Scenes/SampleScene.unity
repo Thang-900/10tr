@@ -2233,6 +2233,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &987388081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 987388083}
+  - component: {fileID: 987388082}
+  m_Layer: 0
+  m_Name: Genneral
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &987388082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987388081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d270e251bc0857740894f29a24a07dd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 1726134185}
+--- !u!4 &987388083
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987388081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 16.58637, y: -11.716743, z: 0.0076539074}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1055464380
 GameObject:
   m_ObjectHideFlags: 0
@@ -31620,13 +31665,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3be22d4128fc96342bdd6a6263d6a896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemaps:
-  - {fileID: 136166865}
-  - {fileID: 1652016701}
-  - {fileID: 1990766291}
-  moveSpeed: 5
-  transitions: {fileID: 1726134190}
-  animator: {fileID: 1726134185}
 --- !u!50 &1726134189
 Rigidbody2D:
   serializedVersion: 4
@@ -31666,17 +31704,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 021daf42a9b31ab4fa96f4cccdb38710, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bom:
-  - {fileID: 935132873}
-  - {fileID: 550996470}
-  - {fileID: 833574621}
-  animator: {fileID: 1726134185}
-  isHoldingBom: 0
-  isWeaponing: 0
-  sideBom: {fileID: 935132873}
-  upBom: {fileID: 833574621}
-  downBom: {fileID: 550996470}
-  bomMove: {fileID: 1726134191}
 --- !u!114 &1726134191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31696,7 +31723,6 @@ MonoBehaviour:
   damageBom: {fileID: 3214844295890265119, guid: 8e20afa6134f3e843812d8eddb66333e, type: 3}
   invokeTime: 5.05
   isThrowing: 0
-  transitions: {fileID: 1726134190}
 --- !u!114 &1726134192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31725,13 +31751,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 878efb65e11955b4eb8e80d10b2d89ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  harmer: []
-  transitions: {fileID: 1726134190}
-  animator: {fileID: 1726134185}
-  isHoldingHarmer: 0
-  sideHarmer: {fileID: 2103210394}
-  upHarmer: {fileID: 650103272}
-  downHarmer: {fileID: 60278045}
 --- !u!114 &1726134194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31744,9 +31763,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c79599728b6434a458cee06b2a6a4631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitions: {fileID: 1726134190}
   animator: {fileID: 1726134185}
   isHoldingGun: 0
+  getInput: {fileID: 987388082}
   sideScriptGun: {fileID: 1055464380}
   upScriptGun: {fileID: 1106711367}
   downScriptGun: {fileID: 1207775381}
@@ -43708,3 +43727,4 @@ SceneRoots:
   - {fileID: 3479620208715894990}
   - {fileID: 1486367188}
   - {fileID: 1912286142}
+  - {fileID: 987388083}

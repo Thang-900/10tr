@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class gun_Animation : MonoBehaviour
 {
-    public transitions transitions;
+    
     public Animator animator;
 
     public bool isHoldingGun = false;
 
-    float vertical;
-    float horizontal;
-    float directionX;
-    float directionY;
+    private float vertical;
+    private float horizontal;
+
+    public GetInput getInput; // Biến để truy cập vào script GetInput
 
     public GameObject sideScriptGun;
     public GameObject upScriptGun;
@@ -22,24 +22,18 @@ public class gun_Animation : MonoBehaviour
     public GameObject upPrefabGun;
     public GameObject downPrefabGun;
 
-    
+    private Vector2 direction;
 
-    private void Update()
+    public void Gun_Animation(bool isWeaponing)
     {
-        vertical = Input.GetAxisRaw("Vertical");
-        horizontal = Input.GetAxisRaw("Horizontal");
-
-        if (isHoldingGun && transitions.isWeaponing)
+        if (isHoldingGun && isWeaponing)
         {
-            //SpriteRenderer sr = GetComponent<SpriteRenderer>();
-            //if (sr != null) sr.enabled = true;
-
+            vertical = Input.GetAxisRaw("Vertical");
+            horizontal = Input.GetAxisRaw("Horizontal");
+            direction = getInput.GetDirection();
             if (vertical != 0 || horizontal != 0)
             {
                 Debug.Log("Đang cầm súng và di chuyển");
-
-                directionX = horizontal;
-                directionY = vertical;
                 if (animator != null)
                 {
                     animator.SetBool("isWalking", false);
@@ -56,19 +50,19 @@ public class gun_Animation : MonoBehaviour
                     animator.SetBool("isGunWalking", false);
                 }
             }
-            if ((directionX == 1 || directionX == -1) && directionY == 0)
+            if ((direction.x == 1 || direction.x == -1) && direction.y == 0)
             {
                 sideScriptGun.SetActive(true);
                 upScriptGun.SetActive(false);
                 downScriptGun.SetActive(false);
             }
-            else if (directionY == 1)
+            else if (direction.y == 1)
             {
                 sideScriptGun.SetActive(false);
                 upScriptGun.SetActive(true);
                 downScriptGun.SetActive(false);
             }
-            else if (directionY == -1)
+            else if (direction.y == -1)
             {
                 sideScriptGun.SetActive(false);
                 upScriptGun.SetActive(false);
@@ -76,19 +70,19 @@ public class gun_Animation : MonoBehaviour
             }
             if (animator != null)
             {
-                animator.SetFloat("horizontal", directionX);
-                animator.SetFloat("vertical", directionY);
+                animator.SetFloat("horizontal", direction.x);
+                animator.SetFloat("vertical", direction.y);
             }
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Gun") && transitions != null && !transitions.isWeaponing)
+        if (other.CompareTag("Gun"))
         {
             Debug.Log("Súng đã được nhặt");
             isHoldingGun = true;
-            transitions.isWeaponing = true;
+            
             Destroy(other.gameObject);
         }
     }

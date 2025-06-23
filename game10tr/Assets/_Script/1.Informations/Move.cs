@@ -2,26 +2,11 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class SmoothGridMovement : MonoBehaviour
+public class Move : MonoBehaviour
 {
-    [Header("Movement Settings")]
-    [SerializeField] private Tilemap[] tilemaps;
-    [SerializeField] private float moveSpeed = 5f;
-    private Boolean isMoving = true;
-    private Rigidbody2D rb;
-    private Vector2 vector2;
-    public transitions transitions; // Biến để truy cập vào script transitions
-    float directionX;
-    float directionY;
-    public Animator animator;   
-    private void Start()
+    public void movePlayer(float x,float y,Animator animator,bool isWeaponing)
     {
-        rb = GetComponent<Rigidbody2D>();
-    }
-    private void Update()
-    {
-        vector2.x = Input.GetAxisRaw("Horizontal");
-        vector2.y = Input.GetAxisRaw("Vertical");
+        Vector2 vector2 = new Vector2(x, y);    
         if (vector2.sqrMagnitude > 1)  // nếu tổng lớn hơn 1 (đi chéo)
             vector2 = vector2.normalized;
 
@@ -54,38 +39,23 @@ public class SmoothGridMovement : MonoBehaviour
         //        }
         //    }
         //}
-        if (!transitions.isWeaponing)
+        if (!isWeaponing)
         {
             if (vector2.x != 0 || vector2.y != 0)
             {
                 Debug.Log("dang khong cam vu khi va di chuyen");
-                directionX = vector2.x;
-                directionY = vector2.y;
 
-                animator.SetBool("isHoldingBomAndWalking", false);
-                animator.SetBool("isHoldingBomAndIdling", false);
                 animator.SetBool("isWalking", true);
                 animator.SetBool("isIdling", false);
             }
             else
             {
                 Debug.Log("dang khong cam vu khi va dung yen");
-                animator.SetBool("isHoldingBomAndWalking", false);
-                animator.SetBool("isHoldingBomAndIdling", false);
+
                 animator.SetBool("isWalking", false);
                 animator.SetBool("isIdling", true);
             }
-            
-        }
-        animator.SetFloat("horizontal", directionX);
-        animator.SetFloat("vertical", directionY);
-
+        }     
     }
-    private void FixedUpdate()
-    {
-        if (isMoving)
-        {
-            rb.MovePosition(rb.position + vector2 * moveSpeed * Time.fixedDeltaTime);
-        }
-    }
+    
 }

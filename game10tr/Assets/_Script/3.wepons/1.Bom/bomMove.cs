@@ -16,7 +16,7 @@ public class BomMove : MonoBehaviour
     private Vector3 mouseWorldPos;
     public bool isThrowing = false; // Biến để kiểm soát trạng thái di chuyển của bom
     private bool isTouching = false; // Biến để kiểm soát trạng thái chạm vào mục tiêu
-    public transitions transitions; // Biến để truy cập vào script transitions
+    //public transitions transitions; // Biến để truy cập vào script transitions
     private GameObject currentBom; // Biến để lưu trữ bom hiện tại
 
     private Vector3 takeTargetPosition()
@@ -26,9 +26,9 @@ public class BomMove : MonoBehaviour
         return mouseWorldPos;
     }
     
-    private void Update()
+    public void Bom_Move(bool isHoldingBom,bool isWeaponing)
     {
-        if (Input.GetMouseButtonDown(0) && transitions.isHoldingBom && !isThrowing)
+        if (Input.GetMouseButtonDown(0) && isHoldingBom && !isThrowing)
         {
             takeTargetPosition();
             Vector3 direction = mouseWorldPos - bomSpawnPoint.position;
@@ -45,7 +45,7 @@ public class BomMove : MonoBehaviour
 
         if (isThrowing && currentBom != null)
         {
-            transitions.isHoldingBom = false;
+            isHoldingBom = false;
             currentBom.transform.position = Vector3.MoveTowards(currentBom.transform.position, targetPosition, speed * Time.deltaTime);
             
             if ((currentBom.transform.position - targetPosition).sqrMagnitude < 0.01f)
@@ -53,7 +53,7 @@ public class BomMove : MonoBehaviour
                 Debug.Log("da den dich+huy trang thai vu khi");
                 Instantiate(damageBom, targetPosition, Quaternion.identity); // Tạo hiệu ứng nổ bom
                 isThrowing = false; // Kết thúc ném
-                transitions.isWeaponing = false; // Kết thúc trạng thái vũ khí
+                isWeaponing = false; // Kết thúc trạng thái vũ khí
 
                 Invoke(nameof(disapear), invokeTime);
 
