@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Idle : MonoBehaviour
+public class transitions : MonoBehaviour
 {
     // phải lấy input vertical và input horizontal trong hàm tổng còn x,y ở trong này là hướng.
     // phải thiết lập animator cho từng vũ khí khi đứng yên, di chuyển, không nên dùng chung
-    public void Idling(GameObject up,GameObject down,GameObject side,string trueParameter, string falseParameter, Animator animator, float x, float y)
+    public void Transition(GameObject up,GameObject down,GameObject side, float x, float y)
     {
-        animator.SetBool(trueParameter, true);
-        animator.SetBool(falseParameter, false);
+        
+        
         if ((x == 1 || x == -1) && y == 0)
         {
             side.SetActive(true);
@@ -33,6 +33,7 @@ public class Idle : MonoBehaviour
             side.SetActive(false);
             down.SetActive(true);
         }
+        
     }
 }
 

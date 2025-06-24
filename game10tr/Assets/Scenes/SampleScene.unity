@@ -31505,13 +31505,11 @@ GameObject:
   m_Component:
   - component: {fileID: 1726134183}
   - component: {fileID: 1726134184}
-  - component: {fileID: 1726134194}
+  - component: {fileID: 1726134193}
   - component: {fileID: 1726134191}
   - component: {fileID: 1726134188}
-  - component: {fileID: 1726134193}
-  - component: {fileID: 1726134190}
-  - component: {fileID: 1726134185}
   - component: {fileID: 1726134192}
+  - component: {fileID: 1726134185}
   - component: {fileID: 1726134187}
   - component: {fileID: 1726134189}
   m_Layer: 0
@@ -31665,6 +31663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3be22d4128fc96342bdd6a6263d6a896, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 5
 --- !u!50 &1726134189
 Rigidbody2D:
   serializedVersion: 4
@@ -31692,18 +31691,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1726134190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726134182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 021daf42a9b31ab4fa96f4cccdb38710, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1726134191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31748,30 +31735,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1726134182}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 878efb65e11955b4eb8e80d10b2d89ed, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1726134194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1726134182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c79599728b6434a458cee06b2a6a4631, type: 3}
+  m_Script: {fileID: 11500000, guid: 9503592c6a14c9142905e3bd37c86d78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 1726134185}
-  isHoldingGun: 0
-  getInput: {fileID: 987388082}
-  sideScriptGun: {fileID: 1055464380}
-  upScriptGun: {fileID: 1106711367}
-  downScriptGun: {fileID: 1207775381}
-  sidePrefabGun: {fileID: 4257746298942446290, guid: 8343baefce9449a4973fb62da85193f2, type: 3}
-  upPrefabGun: {fileID: 8414878804345282934, guid: e3096d10da0549ae97147f8bc95d88b2, type: 3}
-  downPrefabGun: {fileID: 4585321652342069593, guid: 217870614ba740ae8f7668ea9af7ffd8, type: 3}
+  BomUp: {fileID: 833574621}
+  BomDown: {fileID: 550996470}
+  BomSide: {fileID: 935132873}
+  HarmerUp: {fileID: 650103272}
+  HarmerDown: {fileID: 60278045}
+  HarmerSide: {fileID: 2103210394}
+  GunUp: {fileID: 1106711367}
+  GunDown: {fileID: 1207775381}
+  GunSide: {fileID: 1055464380}
+  currentWeapon: 0
 --- !u!1 &1726454100
 GameObject:
   m_ObjectHideFlags: 0
