@@ -15,6 +15,7 @@ public class MainAnimationTransitions : MonoBehaviour
     public GameObject GunUp;
     public GameObject GunDown;
     public GameObject GunSide;
+    public GameObject handGunSide;
 
     private float verticalInput;
     private float horizontalInput;
@@ -25,8 +26,8 @@ public class MainAnimationTransitions : MonoBehaviour
 
     private void UpSideDownDirection(float x, float y,GameObject up,GameObject side,GameObject down)
     {
-        animator.SetFloat(name: "vertical", x);
-        animator.SetFloat("horizontal", y);
+        animator.SetFloat(name: "vertical", y);
+        animator.SetFloat("horizontal", x);
         if (up == null || side == null || down == null)
         {
             return;
@@ -79,8 +80,8 @@ public class MainAnimationTransitions : MonoBehaviour
 
     void Update()
     {
-        verticalInput = Input.GetAxisRaw("Horizontal");
-        horizontalInput = Input.GetAxisRaw("Vertical");
+        verticalInput = Input.GetAxisRaw("Vertical");//up down
+        horizontalInput = Input.GetAxisRaw("Horizontal");//right left
 
         if (horizontalInput != 0 || verticalInput != 0)
         {
@@ -101,12 +102,20 @@ public class MainAnimationTransitions : MonoBehaviour
                 UpSideDownDirection(directionX, directionY,BomUp,BomSide,BomDown);
                 break;
             case WeaponType.Harmer:
-                SetAnimations(verticalInput, horizontalInput, "isHarmerWalking", "isHarmerIdling");
+                SetAnimations(verticalInput, horizontalInput, "isWalking", "isIdling");
                 UpSideDownDirection(directionX, directionY, HarmerUp, HarmerSide, HarmerDown);
                 break;
             case WeaponType.Gun:
                 SetAnimations(verticalInput, horizontalInput, "isGunWalking", "isGunIdling");
                 UpSideDownDirection(directionX, directionY, GunUp, GunSide, GunDown);
+                if (horizontalInput == 1 || horizontalInput == -1)
+                {
+                    handGunSide.SetActive(true);
+                }
+                else
+                {
+                    handGunSide.SetActive(false);
+                }
                 break;
         }
 
@@ -147,7 +156,7 @@ public class MainAnimationTransitions : MonoBehaviour
         {
             currentWeapon = newWeapon;
             ResetAnimations();
-            animator.SetTrigger("Equip");
+            
             return;
         }
     }
