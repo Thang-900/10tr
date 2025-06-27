@@ -10,6 +10,7 @@ TagManager:
   - Bom
   - Harmer
   - Gun
+  - Enermy
   layers:
   - Default
   - TransparentFX
