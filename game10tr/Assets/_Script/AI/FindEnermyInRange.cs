@@ -1,90 +1,96 @@
 ﻿using UnityEngine;
 using Pathfinding;
 
-public class AIFindTargetInRange : MonoBehaviour
+public class AIMoveToSafeAtkCheckRange : MonoBehaviour
 {
-    public float searchRadius = 5f;
-    public string targetTag = "Target";
-    public float checkInterval = 0.5f;
-    public float stopDistance = 1f;
+    public float viewRange = 20f;        // Tầm nhìn
+    public float attackRange = 5f;       // Tầm tấn công
+    public float safeRange = 10f;        // Khoảng cách an toàn (lùi lại nếu enemy quá gần)
+    public float hangAroundRange = 15f;  // Vùng tuần tra nếu không thấy enemy
+    public string targetTag = "Enemy";   // Tag nhận diện enemy
 
-    private AIDestinationSetter destinationSetter;
-    private   AIPath aiPath;
-    private Transform currentTarget = null;
-    private bool isControlledByAI = false;
-    
+    public Transform centerPoint;        // Tâm vùng tuần tra
+    public float width = 10f;            // Chiều rộng vùng tuần tra
+    public float height = 6f;            // Chiều cao vùng tuần tra
+    public float waitTime = 1f;          // Thời gian chờ trước khi chọn điểm mới
+    private float timer;
+
+    private AIPath aiPath;
 
     void Start()
     {
-        destinationSetter = GetComponent<AIDestinationSetter>();
         aiPath = GetComponent<AIPath>();
-        InvokeRepeating(nameof(CheckForTarget), 0f, checkInterval);
+        timer = waitTime;
+        PickNewWanderPoint();
     }
 
     void Update()
     {
-        // Nếu đang không bị AI chiếm quyền, cho phép click chuột phải để di chuyển
-        if (!isControlledByAI && Input.GetMouseButtonDown(1))
+        Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, viewRange, LayerMask.GetMask(targetTag));
+
+        if (enemies.Length > 0)
         {
-            Debug.Log("da huy ai va cho nguoi choi di chuyen");
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            Transform enemy = enemies[0].transform;
+            float distance = Vector2.Distance(transform.position, enemy.position);
+
+            if (distance <= attackRange)
             {
-                destinationSetter.target = null; // xóa target cũ
-                aiPath.destination = hit.point;
-                aiPath.SearchPath();
+                aiPath.canMove = false; // Dừng để tấn công
+            }
+            else if (distance <= safeRange)
+            {
+                aiPath.canMove = true;
+                Vector2 retreatDir = (Vector2)(transform.position - enemy.position).normalized;
+                Vector2 retreatPos = (Vector2)transform.position + retreatDir * safeRange;
+                aiPath.destination = retreatPos;
+            }
+            else if (distance <= viewRange)
+            {
+                aiPath.canMove = true;
+                aiPath.destination = enemy.position;
             }
         }
-
-        // Nếu AI đang tự di chuyển và đã đến gần target thì trả lại quyền cho người chơi
-        if (isControlledByAI && currentTarget != null)
+        else
         {
-            Debug.Log("dang dung ai va da den target");
-            float dist = Vector3.Distance(transform.position, currentTarget.position);
-            if (dist <= stopDistance)
-            {
-                Debug.Log("AI đã đến target, trả lại quyền cho người chơi");
-                isControlledByAI = false;
-                destinationSetter.target = null;
-                currentTarget = null;
+            aiPath.canMove = true;
+            PatrolWhenNoEnemy();
+        }
+    }
 
-                // ✅ Reset đường đi để cho phép click chuột tiếp
-                aiPath.destination = aiPath.position;
-                aiPath.SearchPath();
+    void PatrolWhenNoEnemy()
+    {
+        Collider2D nearbyEnemy = Physics2D.OverlapCircle(transform.position, hangAroundRange, LayerMask.GetMask(targetTag));
+        if (nearbyEnemy == null)
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0f)
+            {
+                PickNewWanderPoint();
+                timer = waitTime;
             }
         }
     }
 
-    void CheckForTarget()
+    void PickNewWanderPoint()
     {
-        // Nếu đã bị AI chiếm quyền, không tìm thêm nữa
-        if (isControlledByAI) return;
+        float randomX = Random.Range(-width / 2f, width / 2f);
+        float randomY = Random.Range(-height / 2f, height / 2f);
 
-        GameObject[] targets = GameObject.FindGameObjectsWithTag(targetTag);
-        GameObject closest = null;
-        float closestDist = Mathf.Infinity;
-
-        foreach (GameObject target in targets)
-        {
-            float dist = Vector3.Distance(transform.position, target.transform.position);
-            if (dist <= searchRadius && dist < closestDist)
-            {
-                closest = target;
-                closestDist = dist;
-            }
-        }
-
-        if (closest != null)
-        {
-            currentTarget = closest.transform;
-            destinationSetter.target = currentTarget;
-            isControlledByAI = true; // chiếm quyền điều khiển
-        }
+        Vector3 wanderPoint = centerPoint.position + new Vector3(randomX, randomY, 0);
+        aiPath.destination = wanderPoint;
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, searchRadius);
+        if (centerPoint == null) return;
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(centerPoint.position, new Vector3(width, height, 0)); // Vùng tuần tra
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, viewRange); // Vùng nhìn thấy enemy
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange); // Vùng tấn công
+        Gizmos.color = Color.white;
+        Gizmos.DrawWireSphere(transform.position, safeRange); // Vùng cần lùi lại
     }
 }
