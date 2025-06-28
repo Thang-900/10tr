@@ -30,12 +30,12 @@ public class CameraPanZoom : MonoBehaviour
 
     void HandlePan()
     {
-        if (Input.GetMouseButtonDown(2)) // chuột giữa
+        if (Input.GetMouseButtonDown(1)) // chuột giữa
         {
             lastMousePosition = Input.mousePosition;
         }
 
-        if (Input.GetMouseButton(2))
+        if (Input.GetMouseButton(1))
         {
             Vector3 delta = Input.mousePosition - lastMousePosition;
             Vector3 move = new Vector3(-delta.x * panSpeed * Time.deltaTime, -delta.y * panSpeed * Time.deltaTime, 0);
