@@ -15,7 +15,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
   - Block
@@ -59,4 +59,7 @@ TagManager:
     locked: 0
   - name: fog
     uniqueID: 4199261185
+    locked: 0
+  - name: Block
+    uniqueID: 602028751
     locked: 0
