@@ -63,7 +63,11 @@ public class AIAnimationController : MonoBehaviour
             aIMoveToSafeAtkCheckRange.enabled = true;
             if (aIMoveToSafeAtkCheckRange.isAtkingEnermy)
             {
+                handUp.SetActive(false);
+                handDown.SetActive(false);
+                handRight.SetActive(false);
                 AIBomAtk();
+                aIMoveToSafeAtkCheckRange.isAtkingEnermy=false; // Reset after attack
             }
         }
         else
@@ -157,8 +161,7 @@ public class AIAnimationController : MonoBehaviour
             isHoldingBom = true;
             isSearchingForBom = false; 
             animator.SetBool("isHoldingBom", true);
-
-
+            aIMoveToSafeAtkCheckRange.isAtkingEnermy = false;
         }
     }
 
