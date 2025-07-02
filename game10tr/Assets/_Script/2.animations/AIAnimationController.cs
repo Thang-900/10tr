@@ -16,6 +16,7 @@ public class AIAnimationController : MonoBehaviour
 
     private bool isHoldingBom = false;
     private bool isThrowing = false;
+    private bool isSearchingForBom = false;
 
     void Start()
     {
@@ -36,11 +37,12 @@ public class AIAnimationController : MonoBehaviour
     {
         if (isThrowing)
         {
-            animator.SetFloat("speed", 0f); // Chặn chuyển animation khác
+            animator.SetFloat("speed", 0f);
             return;
         }
-
         Vector2 velocity = aiPath.velocity;
+        
+
         animator.SetFloat("speed", velocity.magnitude);
 
         if (velocity.sqrMagnitude > 0.01f)
@@ -53,30 +55,66 @@ public class AIAnimationController : MonoBehaviour
             else if (velocity.x > 0.1f)
                 characterTransform.localScale = new Vector3(-1, 1, 1);
 
-            if (isHoldingBom)
-                UpdateHand(velocity);
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (isHoldingBom)
         {
-            AIBomAtk();
+            UpdateHand(velocity);
+            aIMoveToSafeAtkCheckRange.enabled = true;
+            if (aIMoveToSafeAtkCheckRange.isAtkingEnermy)
+            {
+                AIBomAtk();
+            }
         }
+        else
+        {
+            handUp.SetActive(false);
+            handDown.SetActive(false);
+            handRight.SetActive(false);
+            aIMoveToSafeAtkCheckRange.enabled = false;
+            
+
+            if (!isSearchingForBom)
+            {
+                isSearchingForBom = true;
+                Transform nearestStore = PoolBom.Instance.GetNearestBomStore(transform.position);
+                if (nearestStore != null)
+                {
+                    aiPath.destination = nearestStore.position;
+                    aiPath.canMove = true;
+                }
+            }
+        }
+
+
     }
 
     void AIBomAtk()
     {
-        //if (!isHoldingBom || isThrowing) return;
+        if (!isHoldingBom || isThrowing) return;
 
         Debug.Log("Goi ham AIBomAtk()");
         isThrowing = true;
         isHoldingBom = false;
 
-        aiPath.destination = aiPath.position; // Ngắt di chuyển
+        aiPath.destination = aiPath.position;
+        aiPath.canMove = false;
 
         animator.SetBool("isThrowing", true);
-        animator.SetBool("isHoldingBom", false); 
+        animator.SetBool("isHoldingBom", false);
 
         StartCoroutine(ResumeAfterThrow());
+
+        Vector3 targetPos = aIMoveToSafeAtkCheckRange.closestEnemy.position;
+        ThrowBomb(targetPos);
+    }
+
+    void ThrowBomb(Vector3 targetPosition)
+    {
+        GameObject bomb = PoolBom.Instance.GetBomb();
+        bomb.transform.position = transform.position;
+        Bomb bombScript = bomb.GetComponent<Bomb>();
+        bombScript.ThrowTo(targetPosition);
     }
 
     IEnumerator ResumeAfterThrow()
@@ -88,9 +126,10 @@ public class AIAnimationController : MonoBehaviour
 
         animator.SetBool("isThrowing", false);
         animator.SetBool("isHoldingBom", false);
-
+        aIMoveToSafeAtkCheckRange.ResetTarget();
         Debug.Log("Da xong animation, co the di chuyen lai.");
     }
+
 
     void UpdateHand(Vector2 velocity)
     {
@@ -110,4 +149,17 @@ public class AIAnimationController : MonoBehaviour
                 handDown.SetActive(true);
         }
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (!isHoldingBom && collision.CompareTag("BomStore"))
+        {
+            Debug.Log("Nhan duoc bom moi.");
+            isHoldingBom = true;
+            isSearchingForBom = false; 
+            animator.SetBool("isHoldingBom", true);
+
+
+        }
+    }
+
 }

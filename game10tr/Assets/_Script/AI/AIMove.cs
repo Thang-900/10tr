@@ -24,7 +24,9 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
     private AIPath aiPath;
     private Transform currentEnemyTarget = null;
     private bool isRunning = false;
+
     public bool isAtkingEnermy = false;// dùng để biết đang có kẻ địch trong vùng tấn công hay không
+    public Transform closestEnemy = null;
     Vector2 retreatPos;
 
     void Start()
@@ -53,7 +55,7 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
 
         // Tìm enemy gần nhất trong vùng nhìn
         Collider2D[] enemies = Physics2D.OverlapCircleAll(transform.position, viewRange, LayerMask.GetMask(targetLayer));
-        Transform closestEnemy = null;
+        closestEnemy = null;
         float closestDist = Mathf.Infinity;
 
         foreach (var enemy in enemies)
@@ -86,6 +88,7 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
         {
             Debug.Log("enemy is in white range → retreat");
             aiPath.canMove = true;
+            isAtkingEnermy = false;
             Vector2 retreatDir = (Vector2)(transform.position - currentEnemyTarget.position).normalized;
             retreatPos = (Vector2)transform.position + retreatDir * (attackRange + safeRange);
             isRunning = true;
@@ -99,6 +102,7 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
         }
         else
         {
+            isAtkingEnermy = false;
             Debug.Log("enemy is in blue range → chase");
             if (!aiPath.canMove)
                 aiPath.canMove = true;
@@ -128,6 +132,11 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
 
         Vector3 wanderPoint = centerPoint.position + new Vector3(randomX, randomY, 0);
         aiPath.destination = wanderPoint;
+    }
+    public void ResetTarget()
+    {
+        closestEnemy = null;
+        isAtkingEnermy = false;
     }
 
     void OnDrawGizmosSelected()
