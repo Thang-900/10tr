@@ -3,7 +3,7 @@ using Pathfinding;
 using System.Collections;
 
 [RequireComponent(typeof(AIPath))]
-public class AIAnimationController : MonoBehaviour
+public class AIBom : MonoBehaviour
 {
     private AIMoveToSafeAtkCheckRange aIMoveToSafeAtkCheckRange;
     private Animator animator;
@@ -35,6 +35,10 @@ public class AIAnimationController : MonoBehaviour
 
     void Update()
     {
+        if (gameObject.name == "BomCharactorPrefab")
+        {
+
+        }
         if (isThrowing)
         {
             animator.SetFloat("speed", 0f);

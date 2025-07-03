@@ -98,7 +98,11 @@ public class AIMoveToSafeAtkCheckRange : MonoBehaviour
             Debug.Log("enemy is in red range → stop to attack");
             isAtkingEnermy = true;
             if (aiPath.canMove)
+            {
                 aiPath.canMove = false;
+                aiPath.destination = transform.position; // Dừng lại tại vị trí hiện tại
+
+            }
         }
         else
         {
