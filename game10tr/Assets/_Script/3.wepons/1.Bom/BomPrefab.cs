@@ -7,8 +7,12 @@ public class Bomb : MonoBehaviour
     public int damage = 50;
     public LayerMask enemyLayer;
     public float flySpeed = 10f;
+    public float arcHeight = 2f;
 
+    private Vector3 startPosition;
     private Vector3 targetPosition;
+    private float totalDistance;
+    private float flightProgress = 0f;
     private bool isFlying = false;
     private bool hasExploded = false;
 
@@ -20,7 +24,10 @@ public class Bomb : MonoBehaviour
 
     public void ThrowTo(Vector3 target)
     {
+        startPosition = transform.position;
         targetPosition = target;
+        totalDistance = Vector3.Distance(startPosition, targetPosition);
+        flightProgress = 0f;
         isFlying = true;
         hasExploded = false;
         animator.SetBool("isExplosing", false);
@@ -31,14 +38,27 @@ public class Bomb : MonoBehaviour
     {
         if (isFlying)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, flySpeed * Time.deltaTime);
+            flightProgress += flySpeed * Time.deltaTime / totalDistance;
+            flightProgress = Mathf.Clamp01(flightProgress);
 
-            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            Vector3 nextPos = GetParabolaPosition(startPosition, targetPosition, arcHeight, flightProgress);
+            transform.position = nextPos;
+
+            if (flightProgress >= 1f)
             {
                 isFlying = false;
                 Explode();
             }
         }
+    }
+
+    Vector3 GetParabolaPosition(Vector3 start, Vector3 end, float height, float t)
+    {
+        float parabolicT = t * 2f - 1f;
+        Vector3 travelDir = end - start;
+        Vector3 result = Vector3.Lerp(start, end, t);
+        result.y += (-parabolicT * parabolicT + 1f) * height;
+        return result;
     }
 
     public void Explode()

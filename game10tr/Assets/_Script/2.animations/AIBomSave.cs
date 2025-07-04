@@ -14,23 +14,36 @@ public class AIBomSaveSystem : MonoBehaviour
 
     public void Save()
     {
-        Vector3 pos = transform.position;
-        PlayerPrefs.SetFloat(aiID + "_posX", pos.x);
-        PlayerPrefs.SetFloat(aiID + "_posY", pos.y);
-        PlayerPrefs.SetInt(aiID + "_isHoldingBom", aiBom.IsHoldingBom() ? 1 : 0);
-        PlayerPrefs.SetInt(aiID + "_isThrowing", aiBom.IsThrowing() ? 1 : 0);
+        AIBomData data = new AIBomData();
+        data.posX = transform.position.x;
+        data.posY = transform.position.y;
+        data.isHoldingBom = aiBom.IsHoldingBom();
+        data.isThrowing = aiBom.IsThrowing();
+
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(aiID + "_data", json);
+        PlayerPrefs.Save();
     }
 
     public void Load()
     {
-        if (PlayerPrefs.HasKey(aiID + "_posX"))
+        if (PlayerPrefs.HasKey(aiID + "_data"))
         {
-            float x = PlayerPrefs.GetFloat(aiID + "_posX");
-            float y = PlayerPrefs.GetFloat(aiID + "_posY");
-            transform.position = new Vector2(x, y);
+            string json = PlayerPrefs.GetString(aiID + "_data");
+            AIBomData data = JsonUtility.FromJson<AIBomData>(json);
 
-            aiBom.SetHoldingBom(PlayerPrefs.GetInt(aiID + "_isHoldingBom") == 1);
-            aiBom.SetThrowing(PlayerPrefs.GetInt(aiID + "_isThrowing") == 1);
+            transform.position = new Vector2(data.posX, data.posY);
+            aiBom.SetHoldingBom(data.isHoldingBom);
+            aiBom.SetThrowing(data.isThrowing);
         }
     }
+}
+
+[System.Serializable]
+public class AIBomData
+{
+    public float posX;
+    public float posY;
+    public bool isHoldingBom;
+    public bool isThrowing;
 }
