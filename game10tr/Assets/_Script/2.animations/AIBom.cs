@@ -3,7 +3,7 @@ using Pathfinding;
 using System.Collections;
 
 [RequireComponent(typeof(AIPath))]
-public class AIAnimationController : MonoBehaviour
+public class AIBom : MonoBehaviour
 {
     private AIMoveToSafeAtkCheckRange aIMoveToSafeAtkCheckRange;
     private Animator animator;
@@ -164,5 +164,23 @@ public class AIAnimationController : MonoBehaviour
             aIMoveToSafeAtkCheckRange.isAtkingEnermy = false;
         }
     }
+    //để lưu game
+    public bool IsHoldingBom() => isHoldingBom;
+
+    public void SetHoldingBom(bool value)
+    {
+        isHoldingBom = value;
+        animator.SetBool("isHoldingBom", value);
+    }
+
+    public bool IsThrowing() => isThrowing;
+
+    public void SetThrowing(bool value)
+    {
+        isThrowing = value;
+        animator.SetBool("isThrowing", value);
+    }
+
+
 
 }
