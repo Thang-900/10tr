@@ -3,6 +3,14 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuUI : MonoBehaviour
 {
+    [SerializeField] private GameObject settingsPanel; // Giao diện cài đặt
+    [SerializeField] private GameObject mainMenuPanel; // Giao diện chính
+    void Start()
+    {
+        SoundManager.Instance.PlayBGM("Menu");
+        settingsPanel.SetActive(false); // Ẩn giao diện cài đặt khi bắt đầu
+        mainMenuPanel.SetActive(true); // Hiển thị giao diện chính
+    }
     public void StartNewGame()
     {
         // Xóa hết dữ liệu cũ (bao gồm cả score và scene)
@@ -53,5 +61,16 @@ public class MainMenuUI : MonoBehaviour
 
         Application.Quit();
         Debug.Log("Thoát game và đã lưu dữ liệu.");
+    }
+    public void OpenSettings()
+    {
+        // Mở giao diện cài đặt
+        settingsPanel.SetActive(true);
+        mainMenuPanel.SetActive(false);
+    }
+    public void openMain()
+    {         // Quay lại giao diện chính
+        settingsPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
     }
 }

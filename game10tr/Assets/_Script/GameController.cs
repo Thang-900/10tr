@@ -2,22 +2,9 @@
 
 public class GameController : MonoBehaviour
 {
-    private int turnCount = 0;
-    private bool isPlayerTurn = true;
-
-    public void NextTurn()
+    void Start()
     {
-        turnCount++;
-        isPlayerTurn = !isPlayerTurn;
+        SoundManager.Instance.PlayBGM("Gamplay");
     }
 
-    public void CheckGameEnd()
-    {
-        // Kiểm tra điều kiện thắng/thua
-    }
-
-    public void CalculateCasualtyRate()
-    {
-        // Tính tỉ lệ hy sinh
-    }
 }
