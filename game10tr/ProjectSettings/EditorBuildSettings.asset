@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 4c3a4f94d8a49374c89feecf6aa87490
+  - enabled: 1
+    path: Assets/Scenes/ChoseIdea.unity
+    guid: 67128a367ecba6b468026ffeab942a15
   m_configObjects: {}

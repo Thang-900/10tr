@@ -23,7 +23,7 @@ public class MainMenuUI : MonoBehaviour
         }
 
         // Tải scene chơi game
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene("ChoseIdea");
     }
 
     public void ContinueGame()
@@ -72,5 +72,10 @@ public class MainMenuUI : MonoBehaviour
     {         // Quay lại giao diện chính
         settingsPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+    }
+    public void OpenGameplay()
+    {
+        // Tải scene chơi game
+        SceneManager.LoadScene("GameScene");
     }
 }

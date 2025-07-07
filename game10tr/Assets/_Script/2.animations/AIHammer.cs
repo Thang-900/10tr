@@ -13,6 +13,7 @@ public class AIHammer : MonoBehaviour
     private GameObject atkUp, atkDown, atkSide;
 
     private Vector2 lastMoveDir = Vector2.down;
+    private bool isAtkingEnermy = false;
 
     void Start()
     {
@@ -48,133 +49,144 @@ public class AIHammer : MonoBehaviour
         Vector2 velocity = aiPath.velocity;
         if (aIMoveToSafeAtkCheckRange.isAtkingEnermy)
         {
-            
+            isAtkingEnermy = true;
+        }
+        if (isAtkingEnermy)
+        {
+            aIMoveToSafeAtkCheckRange.enabled = false;
             GetComponent<SpriteRenderer>().enabled = false;
-            Debug.Log("dang danh enemy");
             SetATKActive();
-            setATK.isATK = true;
-            if (!setATK.isATK)
+            Debug.Log($"dang danh enemy, setATK.isATK={setATK.isATK}");
+            if (setATK.isATK)
             {
-                Debug.Log("het danh enemy");
                 return;
             }
-            return;
-        }
-
-        GetComponent<SpriteRenderer>().enabled = true;
-        if (Vector3.Distance(transform.position, aiPath.destination) > 0.1f)
-        {
-            Debug.Log("dang di chuyen");
-            animator.SetFloat("moveX", velocity.x);
-            animator.SetFloat("moveY", velocity.y);
-            lastMoveDir = velocity.normalized;
-
-            if (velocity.x < -0.1f)
-                characterTransform.localScale = new Vector3(1, 1, 1);
-            else if (velocity.x > 0.1f)
-                characterTransform.localScale = new Vector3(-1, 1, 1);
-
-            if (!aIMoveToSafeAtkCheckRange.isAtkingEnermy)
+            else
             {
-                SetHandActive();
+                isAtkingEnermy = false;
+                aIMoveToSafeAtkCheckRange.enabled = true;
+                aIMoveToSafeAtkCheckRange.isAtkingEnermy=false;
+                return;
             }
             
         }
-        else if (Vector3.Distance(transform.position, aiPath.destination) < 0.1f && !aIMoveToSafeAtkCheckRange.isAtkingEnermy)
-        {
-            // Đã đến đích, xử lý như đứng yên
-            Debug.Log("da den dich");
-            
-            SetIdleActive();
-        }
 
-
-    }
-
-    void SetHandActive()
-    {
-        ResetIdle();    
-        ResetATK();
-        ResetHands();
-        GetComponent<SpriteRenderer>().enabled = true;
-        if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
-        {
-            if (lastMoveDir.y > 0)
-                handUp.SetActive(true);
-            else
-                handDown.SetActive(true);
-        }
         else
         {
-            handSide.SetActive(true);
-        }
-    }
-
-    void SetIdleActive()
-    {
-        ResetIdle();
-        ResetHands();
-        ResetATK();
-        GetComponent<SpriteRenderer>().enabled = false;
-        if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
-        {
-            if (lastMoveDir.y > 0)
-                idlingUp.SetActive(true);
-            else
-                idlingDown.SetActive(true);
-        }
-        else
-        {
-            idlingSide.SetActive(true);
-        }
-    }
-    void SetATKActive()
-    {
-        ResetHands();
-        ResetIdle();
-        GetComponent<SpriteRenderer>().enabled = false;
-        if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
-        {
-            if (lastMoveDir.y > 0)
+            GetComponent<SpriteRenderer>().enabled = true;
+            if (Vector3.Distance(transform.position, aiPath.destination) > 0.1f)
             {
-                atkUp.SetActive(true);
-                setATK = atkUp.GetComponent<setATK>();
-                atkDown.SetActive(false);
-                atkSide.SetActive(false);
+                Debug.Log("dang di chuyen");
+                animator.SetFloat("moveX", velocity.x);
+                animator.SetFloat("moveY", velocity.y);
+                lastMoveDir = velocity.normalized;
+
+                if (velocity.x < -0.1f)
+                    characterTransform.localScale = new Vector3(1, 1, 1);
+                else if (velocity.x > 0.1f)
+                    characterTransform.localScale = new Vector3(-1, 1, 1);
+
+                if (!aIMoveToSafeAtkCheckRange.isAtkingEnermy)
+                {
+                    SetHandActive();
+                }
 
             }
+            else if (Vector3.Distance(transform.position, aiPath.destination) < 0.1f && !aIMoveToSafeAtkCheckRange.isAtkingEnermy)
+            {
+                // Đã đến đích, xử lý như đứng yên
+                Debug.Log("da den dich");
 
+                SetIdleActive();
+            }
+
+
+        }
+
+        void SetHandActive()
+        {
+            ResetIdle();
+            ResetATK();
+            ResetHands();
+            GetComponent<SpriteRenderer>().enabled = true;
+            if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
+            {
+                if (lastMoveDir.y > 0)
+                    handUp.SetActive(true);
+                else
+                    handDown.SetActive(true);
+            }
+            else
+            {
+                handSide.SetActive(true);
+            }
+        }
+
+        void SetIdleActive()
+        {
+            ResetIdle();
+            ResetHands();
+            ResetATK();
+            GetComponent<SpriteRenderer>().enabled = false;
+            if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
+            {
+                if (lastMoveDir.y > 0)
+                    idlingUp.SetActive(true);
+                else
+                    idlingDown.SetActive(true);
+            }
+            else
+            {
+                idlingSide.SetActive(true);
+            }
+        }
+        void SetATKActive()
+        {
+            ResetHands();
+            ResetIdle();
+            GetComponent<SpriteRenderer>().enabled = false;
+            if (Mathf.Abs(lastMoveDir.y) > Mathf.Abs(lastMoveDir.x))
+            {
+                if (lastMoveDir.y > 0)
+                {
+                    atkUp.SetActive(true);
+                    setATK = atkUp.GetComponent<setATK>();
+                    atkDown.SetActive(false);
+                    atkSide.SetActive(false);
+
+                }
+
+                else
+                {
+                    atkUp.SetActive(false);
+                    atkDown.SetActive(true);
+                    setATK = atkDown.GetComponent<setATK>();
+                    atkSide.SetActive(false);
+
+                }
+            }
             else
             {
                 atkUp.SetActive(false);
-                atkDown.SetActive(true);
-                setATK = atkDown.GetComponent<setATK>();
-                atkSide.SetActive(false);
-
+                atkDown.SetActive(false);
+                atkSide.SetActive(true);
+                setATK = atkSide.GetComponent<setATK>();
             }
         }
-        else
-        {
-            atkUp.SetActive(false);
-            atkDown.SetActive(false);
-            atkSide.SetActive(true);
-            setATK = atkSide.GetComponent<setATK>();
-        }
-
     }
     private void ResetATK()
     {
         atkUp.SetActive(false);
         atkDown.SetActive(false);
         atkSide.SetActive(false);
-        
+
     }
     private void ResetIdle()
     {
         idlingUp.SetActive(false);
         idlingDown.SetActive(false);
         idlingSide.SetActive(false);
-        
+
     }
     private void ResetHands()
     {
