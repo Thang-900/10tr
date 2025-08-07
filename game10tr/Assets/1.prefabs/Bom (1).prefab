@@ -10,11 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3304902748800071538}
   - component: {fileID: 4893635033609334243}
+  - component: {fileID: 6126208806803228384}
   - component: {fileID: 7626519071939307487}
   - component: {fileID: 6174720103092269975}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Bom (1)
-  m_TagString: Untagged
+  m_TagString: Bom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -86,6 +87,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6126208806803228384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7832634746269269714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6f87c95721bb564cb9d9387744e78b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &7626519071939307487
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,12 +112,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 6174720103092269975}
-  explosionRadius: 3.42
   damage: 50
   enemyLayer:
     serializedVersion: 2
     m_Bits: 8
   flySpeed: 10
+  arcHeight: 2
+  canDamage: 0
+  damageZone: 4
+  enemyTag: Enemy
+  BomDamage: 80
 --- !u!95 &6174720103092269975
 Animator:
   serializedVersion: 5

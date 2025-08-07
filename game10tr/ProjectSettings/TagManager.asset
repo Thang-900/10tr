@@ -10,8 +10,19 @@ TagManager:
   - Bom
   - Harmer
   - Gun
-  - Enermy
   - BomStore
+  - BulletStore
+  - Enemy
+  - HighGround
+  - Ground
+  - Block
+  - Bush
+  - Door
+  - Bullet
+  - EnemyBomStore
+  - EnemyBulletStore
+  - Star
+  - Buff
   layers:
   - Default
   - TransparentFX
@@ -20,18 +31,18 @@ TagManager:
   - Water
   - UI
   - Block
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - HighGround
+  - Ground
+  - Bush
+  - Door
+  - BulletStore
+  - Bomstore
+  - Bom
+  - Bullet
+  - EnemyBomStore
+  - EnemyBulletStore
+  - Star
   - 
   - 
   - 
@@ -49,6 +60,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Block
+    uniqueID: 602028751
+    locked: 0
   - name: player
     uniqueID: 480506277
     locked: 0
@@ -60,7 +74,4 @@ TagManager:
     locked: 0
   - name: fog
     uniqueID: 4199261185
-    locked: 0
-  - name: Block
-    uniqueID: 602028751
     locked: 0

@@ -4,7 +4,11 @@ public class GameController : MonoBehaviour
 {
     void Start()
     {
-        SoundManager.Instance.PlayBGM("Gamplay");
+        if(SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlayBGM("Primal (Bonus Theme)");
+        }
+        
     }
 
 }

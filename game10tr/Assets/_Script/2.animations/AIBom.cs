@@ -5,7 +5,7 @@ using System.Collections;
 [RequireComponent(typeof(AIPath))]
 public class AIBom : MonoBehaviour
 {
-    private AIMoveToSafeAtkCheckRange aIMoveToSafeAtkCheckRange;
+    private AIMoveToSafeAtkCheckRange atkCheck;
     private Animator animator;
     private AIPath aiPath;
     private Transform characterTransform;
@@ -18,16 +18,18 @@ public class AIBom : MonoBehaviour
     private bool isThrowing = false;
     private bool isSearchingForBom = false;
 
+    private Vector3 oldPosition;
+
     void Start()
     {
-        aIMoveToSafeAtkCheckRange = GetComponent<AIMoveToSafeAtkCheckRange>();
+        atkCheck = GetComponent<AIMoveToSafeAtkCheckRange>();
         aiPath = GetComponent<AIPath>();
         animator = GetComponent<Animator>();
         characterTransform = transform;
 
-        handUp = transform.Find("Hand_Up").gameObject;
-        handDown = transform.Find("Hand_Down").gameObject;
-        handRight = transform.Find("Hand_Side").gameObject;
+        handUp = transform.Find("hand_Up").gameObject;
+        handDown = transform.Find("hand_Down").gameObject;
+        handRight = transform.Find("hand_Side").gameObject;
 
         isHoldingBom = true;
         animator.SetBool("isHoldingBom", true);
@@ -35,14 +37,15 @@ public class AIBom : MonoBehaviour
 
     void Update()
     {
+        atkCheck.EngageWithEnemy(); // Gọi mỗi frame để cập nhật trạng thái enemy
+        //đang ném bom
         if (isThrowing)
         {
             animator.SetFloat("speed", 0f);
             return;
         }
+        //đang di chuyển hoặc đứng yên
         Vector2 velocity = aiPath.velocity;
-        
-
         animator.SetFloat("speed", velocity.magnitude);
 
         if (velocity.sqrMagnitude > 0.01f)
@@ -54,50 +57,40 @@ public class AIBom : MonoBehaviour
                 characterTransform.localScale = new Vector3(1, 1, 1);
             else if (velocity.x > 0.1f)
                 characterTransform.localScale = new Vector3(-1, 1, 1);
-
         }
-
+        //dang giữ bom
         if (isHoldingBom)
         {
             UpdateHand(velocity);
-            aIMoveToSafeAtkCheckRange.enabled = true;
-            if (aIMoveToSafeAtkCheckRange.isAtkingEnermy)
+
+            if (atkCheck.EnermyInAttackRange && !atkCheck.EnermyInSafeRange)
             {
-                handUp.SetActive(false);
-                handDown.SetActive(false);
-                handRight.SetActive(false);
+                DisableAllHands();
                 AIBomAtk();
-                aIMoveToSafeAtkCheckRange.isAtkingEnermy=false; // Reset after attack
             }
         }
         else
         {
-            handUp.SetActive(false);
-            handDown.SetActive(false);
-            handRight.SetActive(false);
-            aIMoveToSafeAtkCheckRange.enabled = false;
-            
+            DisableAllHands();
+            atkCheck.enabled = false;
 
             if (!isSearchingForBom)
             {
                 isSearchingForBom = true;
-                Transform nearestStore = PoolBom.Instance.GetNearestBomStore(transform.position);
+                Transform nearestStore = PoolBomBullet.Instance.GetNearestBomStore(transform.position);
                 if (nearestStore != null)
                 {
                     aiPath.destination = nearestStore.position;
-                    aiPath.canMove = true;
                 }
             }
         }
-
-
     }
 
     void AIBomAtk()
     {
         if (!isHoldingBom || isThrowing) return;
 
-        Debug.Log("Goi ham AIBomAtk()");
+        Debug.Log("Gọi AIBomAtk()");
         isThrowing = true;
         isHoldingBom = false;
 
@@ -109,13 +102,13 @@ public class AIBom : MonoBehaviour
 
         StartCoroutine(ResumeAfterThrow());
 
-        Vector3 targetPos = aIMoveToSafeAtkCheckRange.closestEnemy.position;
+        Vector3 targetPos = atkCheck.closestEnemy.position;
         ThrowBomb(targetPos);
     }
 
     void ThrowBomb(Vector3 targetPosition)
     {
-        GameObject bomb = PoolBom.Instance.GetBomb();
+        GameObject bomb = PoolBomBullet.Instance.GetBomb();
         bomb.transform.position = transform.position;
         Bomb bombScript = bomb.GetComponent<Bomb>();
         bombScript.ThrowTo(targetPosition);
@@ -126,20 +119,16 @@ public class AIBom : MonoBehaviour
         yield return new WaitForSeconds(1.8f);
 
         isThrowing = false;
-        aiPath.canMove = true;
 
         animator.SetBool("isThrowing", false);
-        animator.SetBool("isHoldingBom", false);
-        aIMoveToSafeAtkCheckRange.ResetTarget();
-        Debug.Log("Da xong animation, co the di chuyen lai.");
-    }
+        atkCheck.ResetTarget();
 
+        Debug.Log("Xong animation, tiếp tục di chuyển.");
+    }
 
     void UpdateHand(Vector2 velocity)
     {
-        handUp.SetActive(false);
-        handDown.SetActive(false);
-        handRight.SetActive(false);
+        DisableAllHands();
 
         if (Mathf.Abs(velocity.x) > Mathf.Abs(velocity.y))
         {
@@ -153,18 +142,27 @@ public class AIBom : MonoBehaviour
                 handDown.SetActive(true);
         }
     }
+
+    void DisableAllHands()
+    {
+        handUp.SetActive(false);
+        handDown.SetActive(false);
+        handRight.SetActive(false);
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!isHoldingBom && collision.CompareTag("BomStore"))
         {
-            Debug.Log("Nhan duoc bom moi.");
+            Debug.Log("Nhặt được bom mới.");
             isHoldingBom = true;
-            isSearchingForBom = false; 
+            isSearchingForBom = false;
             animator.SetBool("isHoldingBom", true);
-            aIMoveToSafeAtkCheckRange.isAtkingEnermy = false;
+            atkCheck.EnermyInAttackRange = false;
         }
     }
-    //để lưu game
+
+    // Lưu game
     public bool IsHoldingBom() => isHoldingBom;
 
     public void SetHoldingBom(bool value)
@@ -180,7 +178,4 @@ public class AIBom : MonoBehaviour
         isThrowing = value;
         animator.SetBool("isThrowing", value);
     }
-
-
-
 }

@@ -1,33 +1,60 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-public class InGameMenu : MonoBehaviour
+public class PauseMenuManager : MonoBehaviour
 {
-    public MultiAIBomManager multiSaveManager;
+    [Header("UI Elements")]
+    public GameObject pauseMenuUI;
+    public Button resumeButton;
+    public Button mainMenuButton;
+    public Button exitButton;
 
-    public void OnExitGame()
+    private bool isPaused = false;
+
+    
+    void Start()
     {
-        SaveBeforeQuit();
-        Application.Quit(); // Chỉ có tác dụng khi build
+        pauseMenuUI.SetActive(false);
+
+        resumeButton.onClick.AddListener(ResumeGame);
+        mainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        exitButton.onClick.AddListener(ExitGame);
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (isPaused)
+                ResumeGame();
+            else
+                PauseGame();
+        }
+    }
+    public void PauseGame()
+    {
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        isPaused = false;
+    }
+
+    public void ReturnToMainMenu()
+    {
+        Time.timeScale = 1f; // Đảm bảo game không bị dừng ở Main Menu
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void ExitGame()
+    {
         Debug.Log("Thoát game.");
+        Application.Quit();
     }
-
-    public void OnReturnToMainMenu()
-    {
-        SaveBeforeQuit();
-        SceneManager.LoadScene("MainMenu"); // Ghi đúng tên scene chính
-    }
-
-    private void SaveBeforeQuit()
-    {
-        // Lưu scene hiện tại
-        PlayerPrefs.SetString("SavedScene", "GameScene");
-
-        // Lưu toàn bộ AI
-        if (multiSaveManager != null)
-            multiSaveManager.SaveAll();
-
-        PlayerPrefs.Save();
-    }
-
 }

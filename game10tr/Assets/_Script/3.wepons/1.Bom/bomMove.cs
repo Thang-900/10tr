@@ -15,7 +15,6 @@ public class BomMove : MonoBehaviour
     private Vector3 targetPosition; // Vị trí mục tiêu mà bom sẽ di chuyển đến
     private Vector3 mouseWorldPos;
     public bool isThrowing = false; // Biến để kiểm soát trạng thái di chuyển của bom
-    private bool isTouching = false; // Biến để kiểm soát trạng thái chạm vào mục tiêu
     //public transitions transitions; // Biến để truy cập vào script transitions
     private GameObject currentBom; // Biến để lưu trữ bom hiện tại
 
